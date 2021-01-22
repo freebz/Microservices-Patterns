@@ -1,0 +1,25 @@
+// 예제 3-1 주문 서비스의 gRPC API
+
+service OrderService {
+  rpc createOrder(CreateOrderRequest) returns (CreateOrderReply) {}
+  rpc cancelOrder(CancelOrderRequest) returns (CancelOrderReply) {}
+  rpc reviseOrder(ReviseOrderRequest) returns (ReviseOrderReply) {}
+  ...
+}
+
+message CreateOrderRequest {
+  int64 restauantId = 1;
+  int64 consumerId = 2;
+  repeated LineItem lineItems = 3;
+  ...
+}
+
+message LineItem {
+  string menuItemId = 1;
+  int32 quantity = 2;
+}
+
+message CreateOrderReply {
+  int64 orderId = 1;
+}
+...
