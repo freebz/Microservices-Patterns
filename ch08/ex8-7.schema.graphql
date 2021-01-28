@@ -1,0 +1,42 @@
+# 예제 8-7 FTGO API 게이트웨이의 GraphQL 스키마
+
+type Query {
+  orders(consumerId : Int!): [Order]
+  order(orderId : Int!): Order
+  consumer(consumerId : Int!): Consumer
+}
+
+type Consumer {
+  id: ID
+  firstName: String
+  lastNmae: String
+  orders: [Order]
+}
+
+type Order {
+  orderId: ID
+  consumerId : Int
+  consumer: Consumer
+  restaurant: Restaurant
+  deliveryInfo: DeliveryInfo
+  ...
+}
+
+type Restaurant {
+  id: ID
+  name: String
+  ...
+}
+
+type DeliveryInfo {
+  status: DeliveryStatus
+  estimatedDeliveryTime: Int
+  assignedCourier: String
+}
+
+enum DeliveryStatus {
+  PREPARING
+  READY_FOR_PICKUP
+  PICKED_UP
+  DELIVERED
+}
