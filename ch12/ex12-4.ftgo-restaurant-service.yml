@@ -1,0 +1,53 @@
+# 예제 12-4 ftgo-restaurant-service의 쿠버네티스 디플로이먼트
+
+apiVersion: extension/v1beta1
+kind: Deployment
+  metadata:
+  name: ftgo-restaurant-servic
+spec:
+replicas: 2
+template:
+  metadata:
+    labels:
+      app: ftgo-restaurant-servic
+  spec:
+    containers:
+    - name: ftgo-restaurant-servic
+      image: msapatterns/ftgo-restaurant-service:latest
+      imagePullPolicy: Always
+      ports:
+      - containerPort: 8080
+        name: httpport
+      env:
+        - name: JAVA_OPTS
+          value: "-Dsun.net.inetaddr.ttl=30"
+        - name: SPRING_DATASOURCE_URL
+          value: jdbc:mysql://ftgo-mysql/eventuate
+        - name: SPRING_DATASOURCE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: ftgo-db-secret
+              key: username
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: ftgo-db-secret
+              key: password
+        - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+          value: com.mysql.jdbc.Driver
+        - name: EVENTUATELOCAL_KAFKA_BOOTSTRAP_SERVERS
+          value: ftgo-kafka:9092
+        - name: EVENTUATELOCAL_ZOOKEEPER_CONNECTION_STRING
+          value: ftgo-zookeeper:2181
+      livenessProbe:
+        httpGet:
+          path: /actuator/health
+          prot: 8080
+        initialDelaySeconds: 60
+        periodSeconds: 20
+      readinessProbe:
+        httpGet:
+        path: /actuator/health
+        port: 8080
+      initialDelaySeconds: 60
+      periodSeconds: 20

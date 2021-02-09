@@ -1,0 +1,35 @@
+# 예제 12-12 음식점 서비스를 람다 함수로 배포하는 serverless.yml 파일
+
+service: ftgo-application-lambda
+
+provider:
+  name: aws
+runtime: java8
+timeout: 35
+region: ${env:AWS_REGION}
+stage: dev
+  envirionment:
+    SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.jdbc.Driver
+    SPRING_DATASOURCE_URL: ...
+    SPRING_DATASOURCE_USERNAME: ...
+    SPRING_DATASOURCE_PASSWORD: ...
+
+package:
+  artifact: ftgo-restaurant-service-aws-lambda/build/distributions/
+    ftgo-restaurant-service-aws-lambda.zip
+
+functions:
+  create-restaurant:
+    handler: net.chrisrichardson.ftgo.restaurantservice.lambda
+      .CreateRestaurantRequestHandler
+    events:
+      - http:
+        path: restaurants
+        method: post
+  find-restaurant:
+    handler: net.chrisrichardson.ftgo.restaurantservice.lambda
+      .FindRestaurantRequestHandler
+    events:
+      - http:
+        path: restaurants/{restaurantId}
+        method: get

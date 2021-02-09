@@ -1,0 +1,12 @@
+# 예제 12-5 음식점 쿠버네티스 서비스가 정의된 YAML 파일
+
+apiVersion: v1
+kind: Service
+metadata:
+name: ftgo-restaurant-service
+spec:
+  ports:
+  - port: 8080
+    targetPort: 8080
+  selector:
+    app: ftgo-restaurant-service
